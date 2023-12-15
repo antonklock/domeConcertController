@@ -1,7 +1,27 @@
 "use client";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useTick, Stage, Text, Graphics } from "@pixi/react";
 import * as PIXI from "pixi.js";
+
+const Player = () => {
+  const [playerX, setPlayerX] = useState(50);
+  const [playerY, setPlayerY] = useState(50);
+
+  const elipse = (g: any) => {
+    g.clear();
+    g.lineStyle(0);
+    g.beginFill(0xffff0b, 1);
+    g.drawCircle(playerX, playerY, 10);
+    g.endFill();
+  };
+
+  useTick((delta) => {
+    setPlayerX((playerX % 400) + 3);
+    // setPlayerY((playerY % 400) + 1);
+  });
+
+  return <Graphics draw={elipse} />;
+};
 
 export const PixiStage = (props: any) => {
   let playerX = 50;
@@ -10,33 +30,13 @@ export const PixiStage = (props: any) => {
   let x = 0;
   let y = 0;
 
-  //   const onTick = () => {
-  //     playerX += 10;
-  //     requestAnimationFrame(onTick);
-  //   };
-
-  useTick((delta) => {
-    playerX += 10;
-  });
-
-  let player = (g: any) => {
-    g.clear();
-    g.lineStyle(0);
-    g.beginFill(0xffff0b, 1);
-    g.drawCircle(playerX, playerY, 10);
-    g.endFill();
-  };
-
-  //   useEffect(() => {
-  //     requestAnimationFrame(onTick);
-  //     // return () => {
-  //     //     cancelAnimationFrame(onTick);
-  //     // }
-  //   }, []);
-
   return (
     <div>
-      <Stage width={400} height={400}>
+      <Stage
+        width={400}
+        height={400}
+        options={{ autoDensity: true, backgroundColor: 0x01262a }}
+      >
         <Text
           text="Hello World!"
           anchor={{ x: 0.5, y: 0.5 }}
@@ -50,7 +50,7 @@ export const PixiStage = (props: any) => {
             })
           }
         />
-        <Graphics draw={player} />
+        <Player />
       </Stage>
     </div>
   );

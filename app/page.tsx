@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { PixiStage } from "@/components/PixiStage";
 
 export default function Home() {
