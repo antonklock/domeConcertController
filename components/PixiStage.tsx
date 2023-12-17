@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Stage, Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import ControlButton from "./ControlButton";
@@ -10,9 +10,25 @@ const randomColor = () => {
 };
 
 export const PixiStage = () => {
+  async function getHelloFromHeruko() {
+    try {
+      const res = await fetch(
+        "https://dome-concert-controller-server-180a81f5a181.herokuapp.com/"
+      );
+      const data = await res.text();
+      setApiMessage(data);
+    } catch (e) {
+      return "Could not fetch data from heruko";
+    }
+  }
+  useEffect(() => {
+    getHelloFromHeruko();
+  }, []);
+
   const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
   const [playerColor, setPlayerColor] = useState(randomColor());
+  const [apiMessage, setApiMessage] = useState("No message from api yet");
 
   const moveX = (speed: number) => {
     setPlayerSpeed({ x: (playerSpeed.x += speed), y: playerSpeed.y });
@@ -74,8 +90,13 @@ export const PixiStage = () => {
         />
       </div>
 
-      <p>Player X = {playerPos.x}</p>
-      <p>Player Y = {playerPos.y}</p>
+      <div className="flex flex-row justify-center mt-10">
+        <div className="flex flex-row text-white">
+          <p>Player X = {playerPos.x}</p>
+          <p>Player Y = {playerPos.y}</p>
+        </div>
+      </div>
+      <p className="text-white">{apiMessage}</p>
     </div>
   );
 };
