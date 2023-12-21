@@ -53,15 +53,15 @@ export const PixiStage = () => {
     }
   }
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      console.log("Get players!");
-      getPlayersFromServer();
-    }, 10);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     console.log("Get players!");
+  //     getPlayersFromServer();
+  //   }, 10);
 
-    // Clear interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+  //   // Clear interval on component unmount
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
