@@ -145,6 +145,7 @@ export const PixiStage = () => {
       <div className="flex flex-row justify-center mt-10">
         <div className="flex flex-row text-white">
           <p>Player X = {playerPos.x}</p>
+          <br />
           <p>Player Y = {playerPos.y}</p>
         </div>
       </div>
