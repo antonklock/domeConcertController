@@ -53,6 +53,10 @@ export const PixiStage = () => {
     }
   }
 
+  useEffect(() => {
+    getPlayersFromServer();
+  }, []);
+
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
   //     console.log("Get players!");
