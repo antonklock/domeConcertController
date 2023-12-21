@@ -37,19 +37,15 @@ const Player = (props: PlayerProps) => {
   };
 
   useTick((delta) => {
-    let newX = position.x;
-    let newY = position.y;
+    let newX = position.x + speed.x;
+    let newY = position.y + speed.y;
 
-    const isWithinBounds = (pos: number, spd: number) => {
-      return pos + spd > 0 && pos + spd < 400;
-    };
+    if (newX > 400) newX -= 400;
+    if (newX < 0) newX += 400;
+    if (newY > 400) newY -= 400;
+    if (newY < 0) newY += 400;
 
-    if (isWithinBounds(position.x, speed.x)) newX = position.x + speed.x;
-    else setSpeed({ x: 0, y: speed.y });
-    if (isWithinBounds(position.y, speed.y)) newY = position.y + speed.y;
-    else setSpeed({ x: speed.x, y: 0 });
-
-    setPosition({ x: newX % 400, y: newY % 400 });
+    setPosition({ x: newX, y: newY });
   });
 
   return <Graphics draw={elipse} />;

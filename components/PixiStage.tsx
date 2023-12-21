@@ -4,6 +4,21 @@ import { Stage, Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import ControlButton from "./ControlButton";
 import Player from "./Player";
+import { RenderRemotePlayers } from "./RenderRemotePlayers";
+
+type Players = {
+  id: any;
+  name: string;
+  position: {
+    x: number;
+    y: number;
+  };
+  color: number;
+}[];
+
+const apiWeb =
+  "https://dome-concert-controller-server-180a81f5a181.herokuapp.com/";
+const localWeb = "http://localhost:3001/";
 
 const randomColor = () => {
   return Math.floor(Math.random() * 16777215);
@@ -12,9 +27,7 @@ const randomColor = () => {
 export const PixiStage = () => {
   async function getHelloFromHeruko() {
     try {
-      const res = await fetch(
-        "https://dome-concert-controller-server-180a81f5a181.herokuapp.com/"
-      );
+      const res = await fetch(localWeb);
       const data = await res.text();
       setApiMessage(data);
     } catch (e) {
@@ -25,16 +38,45 @@ export const PixiStage = () => {
     getHelloFromHeruko();
   }, []);
 
+  const api =
+    "https://dome-concert-controller-server-180a81f5a181.herokuapp.com/players";
+  const localApi = "http://localhost:3001/players";
+
+  async function getPlayersFromServer() {
+    try {
+      const res = await fetch(localApi);
+      const data: Players = await res.json();
+      setRemotePlayers(data);
+      console.log(data);
+    } catch (e) {
+      return "Could not fetch data from heruko";
+    }
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log("Get players!");
+      getPlayersFromServer();
+    }, 10);
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
   const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
   const [playerColor, setPlayerColor] = useState(randomColor());
   const [apiMessage, setApiMessage] = useState("No message from api yet");
 
+  const [remotePlayers, setRemotePlayers] = useState<Players>([]);
+
   const moveX = (speed: number) => {
     setPlayerSpeed({ x: (playerSpeed.x += speed), y: playerSpeed.y });
+    console.log(playerSpeed);
   };
   const moveY = (speed: number) => {
     setPlayerSpeed({ x: playerSpeed.x, y: (playerSpeed.y += speed) });
+    console.log(playerSpeed);
   };
   const resetPlayerPos = () => {
     setPlayerPos({ x: 200, y: 200 });
@@ -69,6 +111,16 @@ export const PixiStage = () => {
           setSpeed={setPlayerSpeed}
           color={playerColor}
         />
+        <RenderRemotePlayers players={remotePlayers} />
+        {/* {remotePlayers.map((player) => {
+          return (
+            <RemotePlayer
+              key={player.id}
+              position={player.position}
+              color={player.color}
+            />
+          );
+        })} */}
       </Stage>
       <div className="flex flex-col w-full justify-center items-center">
         <div className="flex flex-row mt-5">
@@ -97,6 +149,10 @@ export const PixiStage = () => {
         </div>
       </div>
       <p className="text-white">{apiMessage}</p>
+
+      <br />
+      <p className="text-red-500">Players:</p>
+      {/* <RenderRemotePlayers /> */}
     </div>
   );
 };
