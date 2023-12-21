@@ -152,7 +152,13 @@ export const PixiStage = () => {
 
       <br />
       <p className="text-red-500">Players:</p>
-      {/* <RenderRemotePlayers /> */}
+      {remotePlayers.map((player) => {
+        return (
+          <p key={player.id} className="text-red-500">
+            {player.name} - {player.id}
+          </p>
+        );
+      })}
     </div>
   );
 };
