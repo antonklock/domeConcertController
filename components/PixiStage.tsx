@@ -27,7 +27,7 @@ const randomColor = () => {
 export const PixiStage = () => {
   async function getHelloFromHeruko() {
     try {
-      const res = await fetch(localWeb);
+      const res = await fetch(apiWeb);
       const data = await res.text();
       setApiMessage(data);
     } catch (e) {
@@ -44,7 +44,7 @@ export const PixiStage = () => {
 
   async function getPlayersFromServer() {
     try {
-      const res = await fetch(localApi);
+      const res = await fetch(api);
       const data: Players = await res.json();
       setRemotePlayers(data);
       console.log(data);
