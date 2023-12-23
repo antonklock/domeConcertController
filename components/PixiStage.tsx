@@ -6,6 +6,7 @@ import ControlButton from "./ControlButton";
 import { RenderRemotePlayers } from "./RenderRemotePlayers";
 import { RenderLocalPlayer } from "./RenderLocalPlayer";
 import getRandomColor from "../utils/getRandomColor";
+import { TestCors } from "./TestCors";
 
 import {
   closeSocketIo,
@@ -60,6 +61,7 @@ export const PixiStage = () => {
 
   return (
     <div>
+      <TestCors />
       <Stage
         className="rounded-lg"
         width={400}
