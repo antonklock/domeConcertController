@@ -7,7 +7,10 @@ import { RenderRemotePlayers } from "./RenderRemotePlayers";
 import { RenderLocalPlayer } from "./RenderLocalPlayer";
 import getRandomColor from "../utils/getRandomColor";
 
-import { socket } from "../socket";
+import {
+  closeSocketIo,
+  startSocketIo,
+} from "../utils/socketIo/connectionManager";
 
 type Players = {
   id: any;
@@ -20,22 +23,13 @@ type Players = {
 }[];
 
 export const PixiStage = () => {
-  //TODO: MAKE CONNECTION MANAGER
+  //Start socket.io connection
   useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+    startSocketIo({ setIsConnected, setRemotePlayers });
 
-    function updatePlayerPos(players: any) {
-      setRemotePlayers(players);
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("updatePlayerPositions", updatePlayerPos);
+    return () => {
+      closeSocketIo();
+    };
   }, []);
 
   const [remotePlayers, setRemotePlayers] = useState<Players>([]);
