@@ -61,7 +61,7 @@ export const PixiStage = () => {
 
   return (
     <div>
-      <TestCors />
+      {/* <TestCors /> */}
       <Stage
         className="rounded-lg"
         width={400}
