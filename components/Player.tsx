@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { useTick, Graphics } from "@pixi/react";
 
 type PlayerProps = {
@@ -6,23 +5,13 @@ type PlayerProps = {
     x: number;
     y: number;
   };
-  setPosition: Dispatch<
-    SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
   speed: {
     x: number;
     y: number;
   };
-  setSpeed: Dispatch<
-    SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
   color: number;
+  setPosition: (position: { x: number; y: number }) => void;
+  setSpeed: (speed: { x: number; y: number }) => void;
 };
 
 const Player = (props: PlayerProps) => {

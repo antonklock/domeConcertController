@@ -1,19 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
 import { Stage, Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
-import ControlButton from "./ControlButton";
 import { RenderRemotePlayers } from "./RenderRemotePlayers";
 import { RenderLocalPlayer } from "./RenderLocalPlayer";
-import getRandomColor from "../utils/getRandomColor";
-import { TestCors } from "./TestCors";
 
-import {
-  closeSocketIo,
-  startSocketIo,
-} from "../utils/socketIo/connectionManager";
-
-type Players = {
+type LocalPlayer = {
   id: any;
   name: string;
   position: {
@@ -21,52 +12,54 @@ type Players = {
     y: number;
   };
   color: number;
-}[];
-
-export const PixiStage = () => {
-  //Start socket.io connection
-  useEffect(() => {
-    startSocketIo({ setIsConnected, setRemotePlayers });
-
-    return () => {
-      closeSocketIo();
-    };
-  }, []);
-
-  const [remotePlayers, setRemotePlayers] = useState<Players>([]);
-
-  const [isConnected, setIsConnected] = useState(false);
-
-  //TODO: REFACTOR
-  const [playerId, setPlayerId] = useState("TEMP-ID");
-  const [playerName, setPlayerName] = useState("TEMP-NAME");
-  //#TODO
-
-  const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
-  const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
-  const [playerColor, setPlayerColor] = useState(getRandomColor());
-
-  const moveX = (speed: number) => {
-    setPlayerSpeed({ x: (playerSpeed.x += speed), y: playerSpeed.y });
-    console.log(playerSpeed);
+  speed: {
+    x: number;
+    y: number;
   };
-  const moveY = (speed: number) => {
-    setPlayerSpeed({ x: playerSpeed.x, y: (playerSpeed.y += speed) });
-    console.log(playerSpeed);
+  setPosition: (position: { x: number; y: number }) => void;
+  setSpeed: (speed: { x: number; y: number }) => void;
+};
+
+type RemotePlayer = {
+  id: any;
+  name: string;
+  position: {
+    x: number;
+    y: number;
   };
-  const resetPlayerPos = () => {
-    setPlayerPos({ x: 200, y: 200 });
-    setPlayerSpeed({ x: 0, y: 0 });
-  };
+  color: number;
+};
+
+type PixiStageProps = {
+  playerId: string;
+  playerName: string;
+  playerColor: number;
+  playerPos: { x: number; y: number };
+  playerSpeed: { x: number; y: number };
+  setPlayerPos: (playerPos: { x: number; y: number }) => void;
+  setPlayerSpeed: (playerSpeed: { x: number; y: number }) => void;
+  remotePlayers: RemotePlayer[];
+};
+
+export const PixiStage = (props: PixiStageProps) => {
+  const {
+    playerId,
+    playerName,
+    playerColor,
+    playerPos,
+    playerSpeed,
+    setPlayerPos,
+    setPlayerSpeed,
+    remotePlayers,
+  } = props;
 
   return (
     <div>
-      {/* <TestCors /> */}
       <Stage
         className="rounded-lg"
         width={400}
         height={400}
-        options={{ autoDensity: true, backgroundColor: 0x01262a }}
+        options={{ autoDensity: true, backgroundColor: 75306 }}
       >
         <Text
           text="Hello Plupp!"
@@ -82,7 +75,6 @@ export const PixiStage = () => {
           }
         />
 
-        {/* PLAYERS */}
         <RenderRemotePlayers players={remotePlayers} />
         <RenderLocalPlayer
           id={playerId}
@@ -94,44 +86,6 @@ export const PixiStage = () => {
           name={playerName}
         />
       </Stage>
-
-      <div className="flex flex-col w-full justify-center items-center">
-        <div className="flex flex-col mt-5 items-center">
-          <div className="flex flex-col">
-            <ControlButton name="Up" speed={-1} onClick={moveY} />
-          </div>
-          <div className="flex flex-row">
-            <ControlButton name="Left" speed={-1} onClick={moveX} />
-            <ControlButton name="Down" speed={1} onClick={moveY} />
-            <ControlButton name="Right" speed={1} onClick={moveX} />
-          </div>
-        </div>
-
-        <ControlButton
-          name="Reset"
-          speed={0}
-          onClick={resetPlayerPos}
-          color="red"
-        />
-      </div>
-
-      <div className="flex flex-row justify-center mt-10">
-        <div className="flex flex-col text-white">
-          <p>Player X = {playerPos.x}</p>
-          <p>Player Y = {playerPos.y}</p>
-        </div>
-      </div>
-      <div className="flex flex-row justify-center mt-10">
-        {isConnected ? (
-          <div className="flex flex-col text-green-500">
-            <p>Socket connected</p>
-          </div>
-        ) : (
-          <div className="flex flex-col text-red-500">
-            <p>Not connected to socket</p>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

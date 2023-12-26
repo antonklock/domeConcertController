@@ -1,5 +1,4 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
 import Player from "../components/Player";
 
 type PlayerType = {
@@ -14,18 +13,8 @@ type PlayerType = {
     x: number;
     y: number;
   };
-  setPosition: Dispatch<
-    SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
-  setSpeed: Dispatch<
-    SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
+  setPosition: (position: { x: number; y: number }) => void;
+  setSpeed: (speed: { x: number; y: number }) => void;
 };
 
 export const RenderLocalPlayer = (props: PlayerType) => {
