@@ -10,10 +10,12 @@ const startSocketIo = (props: ConnectionManagerProps) => {
     const { setIsConnected, setRemotePlayers, setTryingConnection } = props;
 
     const onConnect = () => {
+        console.log('Connect');
         setTryingConnection(false);
         setIsConnected(true);
     }
     const onDisconnect = () => {
+        console.log('Disconnect');
         setTryingConnection(false);
         setIsConnected(false);
     }
@@ -25,13 +27,13 @@ const startSocketIo = (props: ConnectionManagerProps) => {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("updatePlayerPositions", updatePlayerPos);
+    // socket.on("updatePlayerPositions", updatePlayerPos);
 }
 
 const closeSocketIo = () => {
     socket.off("connect");
     socket.off("disconnect");
-    socket.off("updatePlayerPositions");
+    // socket.off("updatePlayerPositions");
 }
 
 export { startSocketIo, closeSocketIo };

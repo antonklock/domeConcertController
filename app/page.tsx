@@ -30,9 +30,6 @@ export default function Home() {
   const [remotePlayers, setRemotePlayers] = useState<Players>([]);
 
   const handleSocketIoConnection = () => {
-    console.log("tryingConnection: " + tryingConnection);
-    console.log("isConnected: " + tryingConnection);
-
     if (!tryingConnection && !isConnected) {
       setTryingConnection(true);
       startSocketIo({
