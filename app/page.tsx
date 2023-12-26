@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PixiStage } from "@/components/PixiStage";
 import { MovementController } from "@/components/MovementController";
 import { ConnectSocketButton } from "@/components/ConnectSocketButton";
@@ -8,6 +8,7 @@ import getRandomColor from "@/utils/getRandomColor";
 import {
   closeSocketIo,
   startSocketIo,
+  checkConnection,
 } from "../utils/socketIo/connectionManager";
 
 type Players = {
@@ -42,6 +43,11 @@ export default function Home() {
       closeSocketIo();
     }
   };
+
+  useEffect(() => {
+    setIsConnected(checkConnection());
+    console.log("Is connected?", checkConnection());
+  }, []);
 
   const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
