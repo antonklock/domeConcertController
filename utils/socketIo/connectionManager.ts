@@ -18,6 +18,7 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         console.log('Disconnect');
         setTryingConnection(false);
         setIsConnected(false);
+        closeSocketIo();
     }
 
     //TODO: FIX TYPING
