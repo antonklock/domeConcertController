@@ -9,6 +9,8 @@ type ConnectionManagerProps = {
 const startSocketIo = (props: ConnectionManagerProps) => {
     const { setIsConnected, setRemotePlayers, setTryingConnection } = props;
 
+    console.log('Connecting to server...');
+
     const onConnect = () => {
         console.log('Connected');
         setTryingConnection(false);

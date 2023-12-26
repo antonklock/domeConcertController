@@ -32,7 +32,7 @@ export default function Home() {
 
   const handleSocketIoConnection = () => {
     if (!tryingConnection && !isConnected) {
-      console.log("Trying to connect...");
+      // console.log("Trying to connect...");
       setTryingConnection(true);
       startSocketIo({
         setIsConnected,
