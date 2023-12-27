@@ -4,8 +4,8 @@ type ConnectionManagerProps = {
     setIsConnected: (isConnected: boolean) => void;
     setRemotePlayers: (remotePlayers: Player[]) => void;
     setTryingConnection: (connecting: boolean) => void;
+    player: Player;
 }
-
 
 //TODO: BREAK UP PLAYER TYPE INTO HIGH FREQUENCY UPDATES (position) AND LOW FREQUENCY UPDATES (id, name, color)
 type Player = {
@@ -19,7 +19,7 @@ type Player = {
 };
     
 const startSocketIo = (props: ConnectionManagerProps) => {
-    const { setIsConnected, setRemotePlayers, setTryingConnection } = props;
+    const { setIsConnected, setRemotePlayers, setTryingConnection, player } = props;
 
     if (!socket.connected) {
         console.log('Not connected, trying to connect...');
@@ -42,7 +42,18 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         setTryingConnection(false);
         setIsConnected(true);
         startRemotePlayersUpdate();
+        addPlayerToServer(player);
+        startLocalPlayerUpdate(player);
     }
+
+    const addPlayerToServer = (player: Player) => {
+        socket.emit("addPlayer", player);
+    }
+
+    const removePlayerFromServer = () => {
+        socket.emit("removePlayer", player);
+    }
+
     const onDisconnect = () => {
         console.log('Disconnected');
 
@@ -51,6 +62,8 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         closeSocketIo();
         stopPlayersUpdate();
         setRemotePlayers([]);
+        removePlayerFromServer();
+        stopLocalPlayerUpdate();
     }
 
     const updateRemotePlayers = (players: Player[]) => {
@@ -61,6 +74,30 @@ const startSocketIo = (props: ConnectionManagerProps) => {
     socket.on("disconnect", onDisconnect);
     socket.on("updateAllRemotePlayers", updateRemotePlayers);
 }
+
+//////////////////////////
+// Local player update
+//////////////////////////
+
+let localPlayerUpdateInterval: NodeJS.Timeout | null = null;
+
+const startLocalPlayerUpdate = (player: Player) => {
+    if (localPlayerUpdateInterval) clearInterval(localPlayerUpdateInterval);
+
+    localPlayerUpdateInterval = setInterval(() => {
+        socket.emit("updateLocalPlayer", player);
+    }, 33);
+}
+
+const stopLocalPlayerUpdate = () => {
+    if (localPlayerUpdateInterval) {
+        clearInterval(localPlayerUpdateInterval);
+        localPlayerUpdateInterval = null;
+    }
+}
+
+//////////////////////////
+//////////////////////////
 
 //////////////////////////
 // Remote players update
@@ -94,7 +131,7 @@ const checkConnection = () => {
 const closeSocketIo = () => {
     socket.off("connect");
     socket.off("disconnect");
-    socket.off("updatePlayerPositions");
+    socket.off("updateAllRemotePlayers");
 
     socket.close();
     console.log("Connected: " + socket.connected);

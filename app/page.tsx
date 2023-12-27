@@ -10,6 +10,8 @@ import {
   startSocketIo,
   checkConnection,
 } from "../utils/socketIo/connectionManager";
+import { socket } from "../socket";
+import { v4 as uuidv4 } from "uuid";
 
 type Player = {
   id: string;
@@ -22,41 +24,53 @@ type Player = {
 };
 
 export default function Home() {
+  // Socket.io
   const [tryingConnection, setTryingConnection] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
-  const [playerId, setPlayerId] = useState("TEMP-ID");
+  // Player
+  const [playerId, setPlayerId] = useState(uuidv4());
   const [playerName, setPlayerName] = useState("TEMP-NAME");
+  const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
+  const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
+  const [playerColor, setPlayerColor] = useState(getRandomColor());
 
+  const [player, setPlayer] = useState<Player>({
+    id: playerId,
+    name: playerName,
+    position: playerPos,
+    color: playerColor,
+  });
+
+  useEffect(() => {
+    socket.emit("updateLocalPlayer", { id: playerId, position: playerPos });
+  }, [playerId, playerPos]);
+
+  // Remote players
   const [remotePlayers, setRemotePlayers] = useState<Player[]>([]);
 
   const handleSocketIoConnection = () => {
-    console.log("handleSocketIoConnection");
     if (!tryingConnection && !isConnected) {
-      console.log("Start socket.io");
       setTryingConnection(true);
+      //TODO: Refactor this ///////////////////////////
       startSocketIo({
         setIsConnected,
         setRemotePlayers,
         setTryingConnection,
+        player,
       });
+      /////////////////////////////////////////////////
     } else if (!tryingConnection && isConnected) {
-      console.log("Close socket.io");
       closeSocketIo();
     }
-
     setIsConnected(checkConnection());
   };
 
   useEffect(() => {
     setIsConnected(checkConnection());
-    console.log("Is connected?", checkConnection());
   }, []);
 
-  const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
-  const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
-  const [playerColor, setPlayerColor] = useState(getRandomColor());
-
+  //TODO: Refactor this ///////////////////////////
   const moveX = (speed: number) => {
     setPlayerSpeed({ x: (playerSpeed.x += speed), y: playerSpeed.y });
     console.log(playerSpeed);
@@ -69,6 +83,7 @@ export default function Home() {
     setPlayerPos({ x: 200, y: 200 });
     setPlayerSpeed({ x: 0, y: 0 });
   };
+  /////////////////////////////////////////////////
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
