@@ -4,22 +4,6 @@ import * as PIXI from "pixi.js";
 import { RenderRemotePlayers } from "./RenderRemotePlayers";
 import { RenderLocalPlayer } from "./RenderLocalPlayer";
 
-// type LocalPlayer = {
-//   id: any;
-//   name: string;
-//   position: {
-//     x: number;
-//     y: number;
-//   };
-//   color: number;
-//   speed: {
-//     x: number;
-//     y: number;
-//   };
-//   setPosition: (position: { x: number; y: number }) => void;
-//   setSpeed: (speed: { x: number; y: number }) => void;
-// };
-
 type RemotePlayer = {
   id: any;
   name: string;

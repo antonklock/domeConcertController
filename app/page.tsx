@@ -11,15 +11,15 @@ import {
   checkConnection,
 } from "../utils/socketIo/connectionManager";
 
-type Players = {
-  id: any;
+type Player = {
+  id: string;
   name: string;
   position: {
     x: number;
     y: number;
   };
   color: number;
-}[];
+};
 
 export default function Home() {
   const [tryingConnection, setTryingConnection] = useState(false);
@@ -28,11 +28,12 @@ export default function Home() {
   const [playerId, setPlayerId] = useState("TEMP-ID");
   const [playerName, setPlayerName] = useState("TEMP-NAME");
 
-  const [remotePlayers, setRemotePlayers] = useState<Players>([]);
+  const [remotePlayers, setRemotePlayers] = useState<Player[]>([]);
 
   const handleSocketIoConnection = () => {
+    console.log("handleSocketIoConnection");
     if (!tryingConnection && !isConnected) {
-      // console.log("Trying to connect...");
+      console.log("Start socket.io");
       setTryingConnection(true);
       startSocketIo({
         setIsConnected,
@@ -40,8 +41,11 @@ export default function Home() {
         setTryingConnection,
       });
     } else if (!tryingConnection && isConnected) {
+      console.log("Close socket.io");
       closeSocketIo();
     }
+
+    setIsConnected(checkConnection());
   };
 
   useEffect(() => {
