@@ -42,8 +42,8 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         setTryingConnection(false);
         setIsConnected(true);
         startRemotePlayersUpdate();
-        addPlayerToServer(player);
         startLocalPlayerUpdate(player);
+        addPlayerToServer(player);
     }
 
     const addPlayerToServer = (player: Player) => {
@@ -70,8 +70,13 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         setRemotePlayers(players);
     }
 
+    const onSetNewId = (id: string) => {
+        player.id = id;
+    }
+
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("setNewId", onSetNewId);
     socket.on("updateAllRemotePlayers", updateRemotePlayers);
 }
 
@@ -85,7 +90,7 @@ const startLocalPlayerUpdate = (player: Player) => {
     if (localPlayerUpdateInterval) clearInterval(localPlayerUpdateInterval);
 
     localPlayerUpdateInterval = setInterval(() => {
-        socket.emit("updateLocalPlayer", player);
+        socket.emit("updateLocalPlayerPosition", player);
     }, 33);
 }
 

@@ -12,6 +12,8 @@ import {
 } from "../utils/socketIo/connectionManager";
 import { socket } from "../socket";
 import { v4 as uuidv4 } from "uuid";
+import { EnterNameForm } from "@/components/EnterNameForm";
+import { WaitingToConnectToServer } from "@/components/WaitingToConnectToServer";
 
 type Player = {
   id: string;
@@ -28,8 +30,24 @@ export default function Home() {
   const [tryingConnection, setTryingConnection] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
+  // Game
+  const [gameState, setGameState] = useState<"active" | "notActive">(
+    "notActive"
+  );
+  const [playerState, setPlayerState] = useState<"ready" | "notReady">(
+    "notReady"
+  );
+
+  useEffect(() => {
+    if (isConnected) {
+      setGameState("active");
+    } else {
+      setGameState("notActive");
+    }
+  }, [isConnected]);
+
   // Player
-  const [playerId, setPlayerId] = useState(uuidv4());
+  const [playerId, setPlayerId] = useState("TEMP-ID");
   const [playerName, setPlayerName] = useState("TEMP-NAME");
   const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
@@ -43,13 +61,22 @@ export default function Home() {
   });
 
   useEffect(() => {
-    socket.emit("updateLocalPlayer", { id: playerId, position: playerPos });
+    socket.emit("updateLocalPlayerPosition", {
+      id: playerId,
+      position: playerPos,
+    });
   }, [playerId, playerPos]);
 
   // Remote players
   const [remotePlayers, setRemotePlayers] = useState<Player[]>([]);
 
   const handleSocketIoConnection = () => {
+    const newPlayer = {
+      id: playerId,
+      name: playerName,
+      position: playerPos,
+      color: playerColor,
+    };
     if (!tryingConnection && !isConnected) {
       setTryingConnection(true);
       //TODO: Refactor this ///////////////////////////
@@ -57,7 +84,7 @@ export default function Home() {
         setIsConnected,
         setRemotePlayers,
         setTryingConnection,
-        player,
+        player: newPlayer,
       });
       /////////////////////////////////////////////////
     } else if (!tryingConnection && isConnected) {
@@ -86,24 +113,42 @@ export default function Home() {
   /////////////////////////////////////////////////
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <PixiStage
-        playerName={playerName}
-        playerId={playerId}
-        playerColor={playerColor}
-        playerPos={playerPos}
-        playerSpeed={playerSpeed}
-        setPlayerPos={setPlayerPos}
-        setPlayerSpeed={setPlayerSpeed}
-        remotePlayers={remotePlayers}
-      />
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      {playerState === "notReady" ? (
+        <>
+          <h1 className="text-red-500 text-xl">{playerName}</h1>
+          <EnterNameForm
+            setPlayerState={setPlayerState}
+            setPlayerName={setPlayerName}
+            player={{ id: playerId, name: playerName, color: playerColor }}
+          />
+        </>
+      ) : gameState === "notActive" ? (
+        <>
+          <h1 className="text-red-500 text-xl">{playerName}</h1>
+          <WaitingToConnectToServer setPlayerState={setPlayerState} />
+        </>
+      ) : (
+        <>
+          <PixiStage
+            playerName={playerName}
+            playerId={playerId}
+            playerColor={playerColor}
+            playerPos={playerPos}
+            playerSpeed={playerSpeed}
+            setPlayerPos={setPlayerPos}
+            setPlayerSpeed={setPlayerSpeed}
+            remotePlayers={remotePlayers}
+          />
 
-      <MovementController
-        playerPos={playerPos}
-        moveX={moveX}
-        moveY={moveY}
-        resetPlayerPos={resetPlayerPos}
-      />
+          <MovementController
+            playerPos={playerPos}
+            moveX={moveX}
+            moveY={moveY}
+            resetPlayerPos={resetPlayerPos}
+          />
+        </>
+      )}
 
       <ConnectSocketButton
         tryingConnection={tryingConnection}

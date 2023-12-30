@@ -18,15 +18,17 @@ type PlayerType = {
 };
 
 export const RenderLocalPlayer = (props: PlayerType) => {
-  const { position, speed, color, setPosition, setSpeed } = props;
+  const { position, speed, color, setPosition, setSpeed, name } = props;
 
   return (
     <Player
+      key={"TEMP-KEY"}
       position={position}
       setPosition={setPosition}
       speed={speed}
       setSpeed={setSpeed}
       color={color}
+      name={name}
     />
   );
 };

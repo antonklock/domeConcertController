@@ -1,5 +1,6 @@
 "use client";
 import RemotePlayer from "./RemotePlayer";
+
 type Players = {
   id: any;
   name: string;
@@ -24,6 +25,7 @@ export const RenderRemotePlayers = (props: RenderRemotePlayersProps) => {
           key={player.id}
           position={player.position}
           color={player.color}
+          name={player.name}
         />
       );
     });

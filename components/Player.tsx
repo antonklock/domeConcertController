@@ -1,6 +1,8 @@
-import { useTick, Graphics } from "@pixi/react";
+import { useTick, Graphics, Text } from "@pixi/react";
+import * as PIXI from "pixi.js";
 
 type PlayerProps = {
+  name: string;
   position: {
     x: number;
     y: number;
@@ -14,8 +16,16 @@ type PlayerProps = {
   setSpeed: (speed: { x: number; y: number }) => void;
 };
 
+const textStyle = new PIXI.TextStyle({
+  align: "center",
+  fontFamily: '"Source Sans Pro", Helvetica, sans-serif',
+  fontSize: 10,
+  fontWeight: "200",
+  fill: "#5def70",
+});
+
 const Player = (props: PlayerProps) => {
-  const { color, speed, setSpeed, position, setPosition } = props;
+  const { color, speed, setSpeed, position, setPosition, name } = props;
 
   const elipse = (g: any) => {
     g.clear();
@@ -37,7 +47,18 @@ const Player = (props: PlayerProps) => {
     setPosition({ x: newX, y: newY });
   });
 
-  return <Graphics draw={elipse} />;
+  return (
+    <>
+      <Graphics draw={elipse} />
+      <Text
+        text={name}
+        style={textStyle}
+        anchor={0.5}
+        x={position.x}
+        y={position.y + 25}
+      />
+    </>
+  );
 };
 
 export default Player;

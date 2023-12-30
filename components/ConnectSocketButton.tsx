@@ -14,17 +14,17 @@ export const ConnectSocketButton = (props: ConnectSocketButtonProps) => {
         </div>
       ) : isConnected ? (
         <div className="flex flex-col text-green-500">
-          <p>Socket connected</p>
+          <p>Server connected</p>
         </div>
       ) : (
         <div className="flex flex-col text-red-500">
-          <p>Not connected to socket</p>
+          <p>Not connected to server</p>
         </div>
       )}
 
       {tryingConnection ? (
         <button
-          className="w-10 bg-slate-400 text-white rounded-xl px-12 py-4 flex justify-center m-1"
+          className="w-10 bg-slate-400 opacity-25 text-white rounded-xl px-12 py-4 flex justify-center m-1"
           disabled={true}
         >
           <p>Connect</p>
