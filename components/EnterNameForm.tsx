@@ -34,7 +34,8 @@ export const EnterNameForm = (props: PreGameFormProps) => {
           className="bg-blue-200 rounded-md p-2 m-2"
           onClick={() => {
             setPlayerState("ready");
-            socket.emit("updateLocalPlayerInfo", player);
+            //TODO: FIX THIS
+            // socket.emit("updateLocalPlayerInfo", player);
           }}
         >
           Ready

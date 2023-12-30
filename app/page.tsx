@@ -53,12 +53,9 @@ export default function Home() {
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
   const [playerColor, setPlayerColor] = useState(getRandomColor());
 
-  const [player, setPlayer] = useState<Player>({
-    id: playerId,
-    name: playerName,
-    position: playerPos,
-    color: playerColor,
-  });
+  useEffect(() => {
+    console.log("playerId: ", playerId);
+  }, [playerId]);
 
   useEffect(() => {
     socket.emit("updateLocalPlayerPosition", {
@@ -77,6 +74,7 @@ export default function Home() {
       position: playerPos,
       color: playerColor,
     };
+
     if (!tryingConnection && !isConnected) {
       setTryingConnection(true);
       //TODO: Refactor this ///////////////////////////
@@ -84,6 +82,7 @@ export default function Home() {
         setIsConnected,
         setRemotePlayers,
         setTryingConnection,
+        setPlayerId,
         player: newPlayer,
       });
       /////////////////////////////////////////////////
@@ -114,6 +113,12 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <button
+        className="bg-blue-400 text-white p-2 m-2 rounded-md"
+        onClick={() => console.log("playerId: ", playerId)}
+      >
+        Log playerId
+      </button>
       {playerState === "notReady" ? (
         <>
           <h1 className="text-red-500 text-xl">{playerName}</h1>

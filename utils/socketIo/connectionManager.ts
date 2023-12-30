@@ -4,6 +4,7 @@ type ConnectionManagerProps = {
     setIsConnected: (isConnected: boolean) => void;
     setRemotePlayers: (remotePlayers: Player[]) => void;
     setTryingConnection: (connecting: boolean) => void;
+    setPlayerId: (id: string) => void;
     player: Player;
 }
 
@@ -19,7 +20,7 @@ type Player = {
 };
     
 const startSocketIo = (props: ConnectionManagerProps) => {
-    const { setIsConnected, setRemotePlayers, setTryingConnection, player } = props;
+    const { setIsConnected, setRemotePlayers, setTryingConnection, setPlayerId, player } = props;
 
     if (!socket.connected) {
         console.log('Not connected, trying to connect...');
@@ -71,7 +72,8 @@ const startSocketIo = (props: ConnectionManagerProps) => {
     }
 
     const onSetNewId = (id: string) => {
-        player.id = id;
+        console.log("New id: " + id);
+        setPlayerId(id);
     }
 
     socket.on("connect", onConnect);
