@@ -58,11 +58,15 @@ export default function Home() {
   }, [playerId]);
 
   useEffect(() => {
+    if (gameState != "active") return;
+
+    console.log("Updating local player position");
+    console.log("playerId: ", playerId);
     socket.emit("updateLocalPlayerPosition", {
       id: playerId,
       position: playerPos,
     });
-  }, [playerId, playerPos]);
+  }, [playerId, playerPos, gameState]);
 
   // Remote players
   const [remotePlayers, setRemotePlayers] = useState<Player[]>([]);
