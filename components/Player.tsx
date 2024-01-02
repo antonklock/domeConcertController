@@ -12,6 +12,8 @@ type PlayerProps = {
     y: number;
   };
   color: number;
+  stageWidth: number;
+  stageHeight: number;
   setPosition: (position: { x: number; y: number }) => void;
   setSpeed: (speed: { x: number; y: number }) => void;
 };
@@ -25,7 +27,16 @@ const textStyle = new PIXI.TextStyle({
 });
 
 const Player = (props: PlayerProps) => {
-  const { color, speed, setSpeed, position, setPosition, name } = props;
+  const {
+    color,
+    speed,
+    setSpeed,
+    position,
+    setPosition,
+    name,
+    stageWidth,
+    stageHeight,
+  } = props;
 
   const elipse = (g: any) => {
     g.clear();
@@ -39,10 +50,10 @@ const Player = (props: PlayerProps) => {
     let newX = position.x + speed.x;
     let newY = position.y + speed.y;
 
-    if (newX > 400) newX -= 400;
-    if (newX < 0) newX += 400;
-    if (newY > 400) newY -= 400;
-    if (newY < 0) newY += 400;
+    if (newX > stageWidth) newX -= stageWidth;
+    if (newX < 0) newX += stageWidth;
+    if (newY > stageHeight) newY -= stageHeight;
+    if (newY < 0) newY += stageHeight;
 
     setPosition({ x: newX, y: newY });
   });

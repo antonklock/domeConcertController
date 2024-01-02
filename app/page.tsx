@@ -11,7 +11,6 @@ import {
   checkConnection,
 } from "../utils/socketIo/connectionManager";
 import { socket } from "../socket";
-import { v4 as uuidv4 } from "uuid";
 import { EnterNameForm } from "@/components/EnterNameForm";
 import { WaitingToConnectToServer } from "@/components/WaitingToConnectToServer";
 
@@ -53,15 +52,15 @@ export default function Home() {
   const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
   const [playerColor, setPlayerColor] = useState(getRandomColor());
 
+  const [stageWidth, setStageWidth] = useState(400);
+  const [stageHeight, setStageHeight] = useState(400);
+
   useEffect(() => {
     console.log("playerId: ", playerId);
   }, [playerId]);
 
   useEffect(() => {
     if (gameState != "active") return;
-
-    console.log("Updating local player position");
-    console.log("playerId: ", playerId);
     socket.emit("updateLocalPlayerPosition", {
       id: playerId,
       position: playerPos,
@@ -110,19 +109,13 @@ export default function Home() {
     console.log(playerSpeed);
   };
   const resetPlayerPos = () => {
-    setPlayerPos({ x: 200, y: 200 });
+    setPlayerPos({ x: stageWidth / 2, y: stageHeight / 2 });
     setPlayerSpeed({ x: 0, y: 0 });
   };
   /////////////////////////////////////////////////
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <button
-        className="bg-blue-400 text-white p-2 m-2 rounded-md"
-        onClick={() => console.log("playerId: ", playerId)}
-      >
-        Log playerId
-      </button>
       {playerState === "notReady" ? (
         <>
           <h1 className="text-red-500 text-xl">{playerName}</h1>
@@ -148,6 +141,8 @@ export default function Home() {
             setPlayerPos={setPlayerPos}
             setPlayerSpeed={setPlayerSpeed}
             remotePlayers={remotePlayers}
+            stageWidth={stageWidth}
+            stageHeight={stageHeight}
           />
 
           <MovementController

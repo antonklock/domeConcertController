@@ -23,6 +23,8 @@ type PixiStageProps = {
   setPlayerPos: (playerPos: { x: number; y: number }) => void;
   setPlayerSpeed: (playerSpeed: { x: number; y: number }) => void;
   remotePlayers: RemotePlayer[];
+  stageWidth: number;
+  stageHeight: number;
 };
 
 export const PixiStage = (props: PixiStageProps) => {
@@ -35,20 +37,22 @@ export const PixiStage = (props: PixiStageProps) => {
     setPlayerPos,
     setPlayerSpeed,
     remotePlayers,
+    stageWidth,
+    stageHeight,
   } = props;
 
   return (
     <div>
       <Stage
         className="rounded-lg"
-        width={400}
-        height={400}
+        width={stageWidth}
+        height={stageHeight}
         options={{ autoDensity: true, backgroundColor: 75306 }}
       >
         <Text
           text="Hello Plupp!"
           anchor={{ x: 0.5, y: 0.5 }}
-          x={200}
+          x={stageWidth / 2}
           y={150}
           style={
             new PIXI.TextStyle({
@@ -68,6 +72,8 @@ export const PixiStage = (props: PixiStageProps) => {
           setSpeed={setPlayerSpeed}
           color={playerColor}
           name={playerName}
+          stageWidth={stageWidth}
+          stageHeight={stageHeight}
         />
       </Stage>
     </div>

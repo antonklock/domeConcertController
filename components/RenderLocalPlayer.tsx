@@ -13,12 +13,23 @@ type PlayerType = {
     x: number;
     y: number;
   };
+  stageWidth: number;
+  stageHeight: number;
   setPosition: (position: { x: number; y: number }) => void;
   setSpeed: (speed: { x: number; y: number }) => void;
 };
 
 export const RenderLocalPlayer = (props: PlayerType) => {
-  const { position, speed, color, setPosition, setSpeed, name } = props;
+  const {
+    position,
+    speed,
+    color,
+    setPosition,
+    setSpeed,
+    name,
+    stageWidth,
+    stageHeight,
+  } = props;
 
   return (
     <Player
@@ -29,6 +40,8 @@ export const RenderLocalPlayer = (props: PlayerType) => {
       setSpeed={setSpeed}
       color={color}
       name={name}
+      stageWidth={stageWidth}
+      stageHeight={stageHeight}
     />
   );
 };
