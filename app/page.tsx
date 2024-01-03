@@ -13,6 +13,9 @@ import {
 import { socket } from "../socket";
 import { EnterNameForm } from "@/components/EnterNameForm";
 import { WaitingToConnectToServer } from "@/components/WaitingToConnectToServer";
+import { ZustandTest } from "@/components/ZustandTest";
+import { Player } from "@/stores/playerStore";
+// import { playerNameStore } from "@/stores/playerNameStore";
 
 type Player = {
   id: string;
@@ -114,20 +117,21 @@ export default function Home() {
   };
   /////////////////////////////////////////////////
 
+  const zPlayerName = Player((state) => state.name);
+  const zPlayerState = Player((state) => state.playerState);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      {playerState === "notReady" ? (
+      {zPlayerState === "notReady" ? (
         <>
-          <h1 className="text-red-500 text-xl">{playerName}</h1>
-          <EnterNameForm
-            setPlayerState={setPlayerState}
-            setPlayerName={setPlayerName}
-            player={{ id: playerId, name: playerName, color: playerColor }}
-          />
+          <h1 className="text-red-500 text-xl">{zPlayerName}</h1>
+          <h1 className="text-yellow-400">{zPlayerState}</h1>
+          <EnterNameForm />
         </>
       ) : gameState === "notActive" ? (
         <>
-          <h1 className="text-red-500 text-xl">{playerName}</h1>
+          <h1 className="text-red-500 text-xl">{zPlayerName}</h1>
+          <h1 className="text-green-400">{zPlayerState}</h1>
           <WaitingToConnectToServer setPlayerState={setPlayerState} />
         </>
       ) : (

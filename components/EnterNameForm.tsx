@@ -1,22 +1,13 @@
-import { socket } from "../socket";
+import { Player } from "@/stores/playerStore";
 
-type PreGameFormProps = {
-  setPlayerState: (state: "ready" | "notReady") => void;
-  setPlayerName: (name: string) => void;
-  player: {
-    id: string;
-    name: string;
-    color: number;
-  };
-};
-
-export const EnterNameForm = (props: PreGameFormProps) => {
-  const { setPlayerState, setPlayerName, player } = props;
+export const EnterNameForm = () => {
+  const player = Player((state) => state);
 
   const handleUpdateName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     if (input.length < 3 || input.length > 16) return;
-    setPlayerName(e.target.value);
+
+    player.setName(input);
   };
 
   return (
@@ -28,12 +19,11 @@ export const EnterNameForm = (props: PreGameFormProps) => {
           placeholder="Player name"
           type="text"
           onChange={(e) => handleUpdateName(e)}
-          // value={playerName}
         />
         <button
           className="bg-blue-200 rounded-md p-2 m-2"
           onClick={() => {
-            setPlayerState("ready");
+            player.setPlayerState("ready");
             //TODO: FIX THIS
             // socket.emit("updateLocalPlayerInfo", player);
           }}
