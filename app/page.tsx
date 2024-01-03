@@ -14,7 +14,6 @@ import { socket } from "../socket";
 import { EnterNameForm } from "@/components/EnterNameForm";
 import { WaitingToConnectToServer } from "@/components/WaitingToConnectToServer";
 import { Player } from "@/stores/playerStore";
-import { v4 as uuidv4 } from "uuid";
 
 type Player = {
   id: string;
