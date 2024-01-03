@@ -13,9 +13,8 @@ import {
 import { socket } from "../socket";
 import { EnterNameForm } from "@/components/EnterNameForm";
 import { WaitingToConnectToServer } from "@/components/WaitingToConnectToServer";
-import { ZustandTest } from "@/components/ZustandTest";
 import { Player } from "@/stores/playerStore";
-// import { playerNameStore } from "@/stores/playerNameStore";
+import { v4 as uuidv4 } from "uuid";
 
 type Player = {
   id: string;
@@ -48,37 +47,36 @@ export default function Home() {
     }
   }, [isConnected]);
 
-  // Player
-  const [playerId, setPlayerId] = useState("TEMP-ID");
-  const [playerName, setPlayerName] = useState("TEMP-NAME");
-  const [playerPos, setPlayerPos] = useState({ x: 200, y: 200 });
-  const [playerSpeed, setPlayerSpeed] = useState({ x: 0, y: 0 });
-  const [playerColor, setPlayerColor] = useState(getRandomColor());
+  //LOCAL PLAYER
+  const zPlayerId = Player((state) => state.id);
+  const zPlayerName = Player((state) => state.name);
+  const zPlayerStatus = Player((state) => state.status);
+  const zPlayerPos = Player((state) => state.position);
+  const zPlayerColor = Player((state) => state.color);
+  const zSetPlayerColor = Player((state) => state.setColor);
+  const zSetPlayerId = Player((state) => state.setId);
 
+  //STAGE
   const [stageWidth, setStageWidth] = useState(400);
   const [stageHeight, setStageHeight] = useState(400);
 
   useEffect(() => {
-    console.log("playerId: ", playerId);
-  }, [playerId]);
-
-  useEffect(() => {
     if (gameState != "active") return;
     socket.emit("updateLocalPlayerPosition", {
-      id: playerId,
-      position: playerPos,
+      id: zPlayerId,
+      position: zPlayerPos,
     });
-  }, [playerId, playerPos, gameState]);
+  }, [zPlayerId, zPlayerPos, gameState]);
 
   // Remote players
   const [remotePlayers, setRemotePlayers] = useState<Player[]>([]);
 
   const handleSocketIoConnection = () => {
     const newPlayer = {
-      id: playerId,
-      name: playerName,
-      position: playerPos,
-      color: playerColor,
+      id: zPlayerId,
+      name: zPlayerName,
+      position: zPlayerPos,
+      color: zPlayerColor,
     };
 
     if (!tryingConnection && !isConnected) {
@@ -88,7 +86,7 @@ export default function Home() {
         setIsConnected,
         setRemotePlayers,
         setTryingConnection,
-        setPlayerId,
+        zSetPlayerId,
         player: newPlayer,
       });
       /////////////////////////////////////////////////
@@ -100,60 +98,34 @@ export default function Home() {
 
   useEffect(() => {
     setIsConnected(checkConnection());
-  }, []);
-
-  //TODO: Refactor this ///////////////////////////
-  const moveX = (speed: number) => {
-    setPlayerSpeed({ x: (playerSpeed.x += speed), y: playerSpeed.y });
-    console.log(playerSpeed);
-  };
-  const moveY = (speed: number) => {
-    setPlayerSpeed({ x: playerSpeed.x, y: (playerSpeed.y += speed) });
-    console.log(playerSpeed);
-  };
-  const resetPlayerPos = () => {
-    setPlayerPos({ x: stageWidth / 2, y: stageHeight / 2 });
-    setPlayerSpeed({ x: 0, y: 0 });
-  };
-  /////////////////////////////////////////////////
-
-  const zPlayerName = Player((state) => state.name);
-  const zPlayerState = Player((state) => state.playerState);
+    zSetPlayerColor(getRandomColor());
+  }, [zSetPlayerColor]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      {zPlayerState === "notReady" ? (
+      {zPlayerStatus === "notReady" ? (
         <>
-          <h1 className="text-red-500 text-xl">{zPlayerName}</h1>
-          <h1 className="text-yellow-400">{zPlayerState}</h1>
+          <h1 className="text-red-500 text-xl">NAME: {zPlayerName}</h1>
+          <h1 className="text-yellow-400">STATUS: {zPlayerStatus}</h1>
           <EnterNameForm />
         </>
       ) : gameState === "notActive" ? (
         <>
-          <h1 className="text-red-500 text-xl">{zPlayerName}</h1>
-          <h1 className="text-green-400">{zPlayerState}</h1>
-          <WaitingToConnectToServer setPlayerState={setPlayerState} />
+          <h1 className="text-red-500 text-xl">NAME: {zPlayerName}</h1>
+          <h1 className="text-green-400">STATUS: {zPlayerStatus}</h1>
+          <WaitingToConnectToServer />
         </>
       ) : (
         <>
           <PixiStage
-            playerName={playerName}
-            playerId={playerId}
-            playerColor={playerColor}
-            playerPos={playerPos}
-            playerSpeed={playerSpeed}
-            setPlayerPos={setPlayerPos}
-            setPlayerSpeed={setPlayerSpeed}
             remotePlayers={remotePlayers}
             stageWidth={stageWidth}
             stageHeight={stageHeight}
           />
 
           <MovementController
-            playerPos={playerPos}
-            moveX={moveX}
-            moveY={moveY}
-            resetPlayerPos={resetPlayerPos}
+            stageWidth={stageWidth}
+            stageHeight={stageHeight}
           />
         </>
       )}

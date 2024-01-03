@@ -1,21 +1,10 @@
 import { useTick, Graphics, Text } from "@pixi/react";
+import { Player } from "@/stores/playerStore";
 import * as PIXI from "pixi.js";
 
-type PlayerProps = {
-  name: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  speed: {
-    x: number;
-    y: number;
-  };
-  color: number;
+type LocalPlayerProps = {
   stageWidth: number;
   stageHeight: number;
-  setPosition: (position: { x: number; y: number }) => void;
-  setSpeed: (speed: { x: number; y: number }) => void;
 };
 
 const textStyle = new PIXI.TextStyle({
@@ -26,17 +15,15 @@ const textStyle = new PIXI.TextStyle({
   fill: "#5def70",
 });
 
-const Player = (props: PlayerProps) => {
-  const {
-    color,
-    speed,
-    setSpeed,
-    position,
-    setPosition,
-    name,
-    stageWidth,
-    stageHeight,
-  } = props;
+const LocalPlayer = (props: LocalPlayerProps) => {
+  const { stageWidth, stageHeight } = props;
+
+  const name = Player((state) => state.name);
+  const color = Player((state) => state.color);
+  const position = Player((state) => state.position);
+  const speed = Player((state) => state.speed);
+  const setSpeed = Player((state) => state.setSpeed);
+  const setPosition = Player((state) => state.setPosition);
 
   const elipse = (g: any) => {
     g.clear();
@@ -72,4 +59,4 @@ const Player = (props: PlayerProps) => {
   );
 };
 
-export default Player;
+export default LocalPlayer;

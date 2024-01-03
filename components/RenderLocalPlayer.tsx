@@ -1,45 +1,17 @@
 "use client";
-import Player from "../components/Player";
+import LocalPlayer from "./LocalPlayer";
 
 type PlayerType = {
-  id: any;
-  name: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  color: number;
-  speed: {
-    x: number;
-    y: number;
-  };
   stageWidth: number;
   stageHeight: number;
-  setPosition: (position: { x: number; y: number }) => void;
-  setSpeed: (speed: { x: number; y: number }) => void;
 };
 
 export const RenderLocalPlayer = (props: PlayerType) => {
-  const {
-    position,
-    speed,
-    color,
-    setPosition,
-    setSpeed,
-    name,
-    stageWidth,
-    stageHeight,
-  } = props;
+  const { stageWidth, stageHeight } = props;
 
   return (
-    <Player
-      key={"TEMP-KEY"}
-      position={position}
-      setPosition={setPosition}
-      speed={speed}
-      setSpeed={setSpeed}
-      color={color}
-      name={name}
+    <LocalPlayer
+      key={"local-player"}
       stageWidth={stageWidth}
       stageHeight={stageHeight}
     />

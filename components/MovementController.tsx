@@ -1,14 +1,32 @@
 import ControlButton from "./ControlButton";
+import { Player } from "@/stores/playerStore";
 
 type MovementControllerProps = {
-  playerPos: { x: number; y: number };
-  moveY: (speed: number) => void;
-  moveX: (speed: number) => void;
-  resetPlayerPos: () => void;
+  stageWidth: number;
+  stageHeight: number;
 };
 
 export const MovementController = (props: MovementControllerProps) => {
-  const { playerPos, moveY, moveX, resetPlayerPos } = props;
+  const { stageWidth, stageHeight } = props;
+
+  const zPlayerPos = Player((state) => state.position);
+  const zPlayerSpeed = Player((state) => state.speed);
+  const zSetPlayerPos = Player((state) => state.setPosition);
+  const zSetPlayerSpeed = Player((state) => state.setSpeed);
+
+  const moveX = (speed: number) => {
+    zSetPlayerSpeed({ x: (zPlayerSpeed.x += speed), y: zPlayerSpeed.y });
+    console.log(zPlayerSpeed);
+  };
+  const moveY = (speed: number) => {
+    zSetPlayerSpeed({ x: zPlayerSpeed.x, y: (zPlayerSpeed.y += speed) });
+    console.log(zPlayerSpeed);
+  };
+  const resetPlayerPos = () => {
+    zSetPlayerPos({ x: stageWidth / 2, y: stageHeight / 2 });
+    zSetPlayerSpeed({ x: 0, y: 0 });
+  };
+
   return (
     <div className="flex flex-col w-full justify-center items-center">
       <div className="flex flex-col mt-5 items-center">
@@ -31,8 +49,8 @@ export const MovementController = (props: MovementControllerProps) => {
 
       <div className="flex flex-row justify-center mt-10">
         <div className="flex flex-col text-white">
-          <p>Player X = {playerPos.x}</p>
-          <p>Player Y = {playerPos.y}</p>
+          <p>Player X = {zPlayerPos.x}</p>
+          <p>Player Y = {zPlayerPos.y}</p>
         </div>
       </div>
     </div>

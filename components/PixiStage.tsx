@@ -15,31 +15,13 @@ type RemotePlayer = {
 };
 
 type PixiStageProps = {
-  playerId: string;
-  playerName: string;
-  playerColor: number;
-  playerPos: { x: number; y: number };
-  playerSpeed: { x: number; y: number };
-  setPlayerPos: (playerPos: { x: number; y: number }) => void;
-  setPlayerSpeed: (playerSpeed: { x: number; y: number }) => void;
   remotePlayers: RemotePlayer[];
   stageWidth: number;
   stageHeight: number;
 };
 
 export const PixiStage = (props: PixiStageProps) => {
-  const {
-    playerId,
-    playerName,
-    playerColor,
-    playerPos,
-    playerSpeed,
-    setPlayerPos,
-    setPlayerSpeed,
-    remotePlayers,
-    stageWidth,
-    stageHeight,
-  } = props;
+  const { remotePlayers, stageWidth, stageHeight } = props;
 
   return (
     <div>
@@ -64,17 +46,7 @@ export const PixiStage = (props: PixiStageProps) => {
         />
 
         <RenderRemotePlayers players={remotePlayers} />
-        <RenderLocalPlayer
-          id={playerId}
-          position={playerPos}
-          setPosition={setPlayerPos}
-          speed={playerSpeed}
-          setSpeed={setPlayerSpeed}
-          color={playerColor}
-          name={playerName}
-          stageWidth={stageWidth}
-          stageHeight={stageHeight}
-        />
+        <RenderLocalPlayer stageWidth={stageWidth} stageHeight={stageHeight} />
       </Stage>
     </div>
   );

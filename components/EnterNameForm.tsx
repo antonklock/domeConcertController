@@ -1,13 +1,14 @@
 import { Player } from "@/stores/playerStore";
 
 export const EnterNameForm = () => {
-  const player = Player((state) => state);
+  const setName = Player((state) => state.setName);
+  const setStatus = Player((state) => state.setStatus);
 
   const handleUpdateName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     if (input.length < 3 || input.length > 16) return;
 
-    player.setName(input);
+    setName(input);
   };
 
   return (
@@ -23,7 +24,7 @@ export const EnterNameForm = () => {
         <button
           className="bg-blue-200 rounded-md p-2 m-2"
           onClick={() => {
-            player.setPlayerState("ready");
+            setStatus("ready");
             //TODO: FIX THIS
             // socket.emit("updateLocalPlayerInfo", player);
           }}
