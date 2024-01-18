@@ -6,6 +6,8 @@ type MovementControllerProps = {
   stageHeight: number;
 };
 
+const playerSpeed = 0.1;
+
 export const MovementController = (props: MovementControllerProps) => {
   const { stageWidth, stageHeight } = props;
 
@@ -31,12 +33,12 @@ export const MovementController = (props: MovementControllerProps) => {
     <div className="flex flex-col w-full justify-center items-center">
       <div className="flex flex-col mt-5 items-center">
         <div className="flex flex-col">
-          <ControlButton name="Up" speed={-1} onClick={moveY} />
+          <ControlButton name="Up" speed={-playerSpeed} onClick={moveY} />
         </div>
         <div className="flex flex-row">
-          <ControlButton name="Left" speed={-1} onClick={moveX} />
-          <ControlButton name="Down" speed={1} onClick={moveY} />
-          <ControlButton name="Right" speed={1} onClick={moveX} />
+          <ControlButton name="Left" speed={-playerSpeed} onClick={moveX} />
+          <ControlButton name="Down" speed={playerSpeed} onClick={moveY} />
+          <ControlButton name="Right" speed={playerSpeed} onClick={moveX} />
         </div>
       </div>
 

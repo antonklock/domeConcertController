@@ -18,6 +18,18 @@ type Player = {
     };
     color: number;
 };
+
+type JsonPlayers = {
+    players: {
+        id: string,
+        name: string,
+        position: {
+            x: number,
+            y: number,
+        }
+        color: number,
+    }[]
+}
     
 const startSocketIo = (props: ConnectionManagerProps) => {
     const { setIsConnected, setRemotePlayers, setTryingConnection, zSetPlayerId, player } = props;
@@ -76,10 +88,15 @@ const startSocketIo = (props: ConnectionManagerProps) => {
         zSetPlayerId(id);
     }
 
+    const updateAllPlayersJSON = (jsonPlayers: JsonPlayers) => {
+        console.log(jsonPlayers);
+    }
+
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("setNewId", onSetNewId);
     socket.on("updateAllRemotePlayers", updateRemotePlayers);
+    socket.on("updateAllPlayersJSON", updateAllPlayersJSON);
 }
 
 //////////////////////////
